@@ -1,7 +1,9 @@
-package com.lhl.test;
+package com.lhl.test.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.lhl.test.R;
 
 public class MainActivity extends AppCompatActivity {
 
