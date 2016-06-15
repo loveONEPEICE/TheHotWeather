@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.lhl.test.model.City;
 import com.lhl.test.model.County;
@@ -50,6 +51,7 @@ public class HotWeatherDB {
             values.put("province_name", province.getProvinceName());
             values.put("province_code", province.getProvinceCode());
             db.insert("Province", null, values);
+            Log.d("TAG", "saveProvince: 成功");
         }
     }
 
@@ -69,6 +71,7 @@ public class HotWeatherDB {
         if (cursor != null) {
             cursor.close();
         }
+        Log.d("TAG", "loadProvinces:list.size = "+list.size());
         return list;
     }
 
@@ -78,7 +81,9 @@ public class HotWeatherDB {
             ContentValues values = new ContentValues();
             values.put("city_name", city.getCityName());
             values.put("city_code", city.getCityCode());
+            values.put("province_id",city.getProvinceId());
             db.insert("City", null, values);
+            Log.d("TAG", "saveCity: success");
         }
     }
 
@@ -93,6 +98,7 @@ public class HotWeatherDB {
                 city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
                 city.setProvinceId(provinceId);
+                Log.d("TAG", "loadCities: "+city);
                 list.add(city);
             } while (cursor.moveToNext());
         }
@@ -100,6 +106,7 @@ public class HotWeatherDB {
         if (cursor != null) {
             cursor.close();
         }
+        Log.d("TAG", "loadCities_listSize: "+list.size());
         return list;
     }
 //    将County实例存储到数据库
@@ -110,6 +117,7 @@ public class HotWeatherDB {
             values.put("county_code",county.getCountyCode());
             values.put("city_id",county.getCityID());
             db.insert("County",null,values);
+            Log.d("TAG", "saveCounty: success");
         }
     }
     //从数据库读取某城市下的所有县的信息
@@ -128,6 +136,7 @@ public class HotWeatherDB {
         if (cursor != null){
             cursor.close();
         }
+        Log.d("TAG", "loadCounties: ");
         return list;
     }
 

@@ -1,6 +1,7 @@
 package com.lhl.test.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.lhl.test.db.HotWeatherDB;
 import com.lhl.test.model.City;
@@ -25,6 +26,7 @@ public class Utility {
                     province.setProvinceName(array[1]);
 //                    将解析出来的数据存储到Province表
                     hotWeatherDB.saveProvince(province);
+                    Log.d("TAG", "handleProvincesResponse: ");
                 }
                 return true;
             }
@@ -47,6 +49,7 @@ public class Utility {
                     city.setProvinceId(provinceId);
 //                    将解析出来的数据存储到City表
                     hotWeatherDB.saveCity(city);
+                    Log.d("TAG", "handleCitiesResponse: ");
                 }
                 return true;
             }
@@ -68,6 +71,7 @@ public class Utility {
                   county.setCityID(cityId);
 //                  将解析出来的数据存储到County表
                   hotWeatherDB.saveCounty(county);
+                  Log.d("TAG", "handleCountiesResponse: ");
               }
               return true;
           }

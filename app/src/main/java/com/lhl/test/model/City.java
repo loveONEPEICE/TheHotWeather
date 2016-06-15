@@ -40,4 +40,14 @@ public class City {
     public void setProvinceId(int provinceId) {
         this.provinceId = provinceId;
     }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "_id=" + _id +
+                ", cityName='" + cityName + '\'' +
+                ", cityCode='" + cityCode + '\'' +
+                ", provinceId=" + provinceId +
+                '}';
+    }
 }

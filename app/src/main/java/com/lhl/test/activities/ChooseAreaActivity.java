@@ -1,9 +1,11 @@
 package com.lhl.test.activities;
 
 import android.app.ProgressDialog;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Adapter;
@@ -68,9 +70,11 @@ public class ChooseAreaActivity extends AppCompatActivity {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provincesList.get(index);
                     queryCities();
+                    Log.d("TAG", "onItemClick: queryCities()");
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
+                    Log.d("TAG", "onItemClick:  queryCounties();");
                 }
             }
         });
@@ -113,8 +117,10 @@ public class ChooseAreaActivity extends AppCompatActivity {
             listView.setSelection(0);
             tv_choose_title.setText("中国");
             currentLevel = LEVEL_PROVINCE;
+            Log.d("TAG", "queryProvinces: 从数据库加载");
         } else {
             queryFromServer(null, "province");
+            Log.d("TAG", "queryProvinces: 从网上下载");
         }
     }
 
@@ -133,8 +139,10 @@ public class ChooseAreaActivity extends AppCompatActivity {
             listView.setSelection(0);
             tv_choose_title.setText(selectedProvince.getProvinceName());
             currentLevel = LEVEL_CITY;
+            Log.d("TAG", "queryCities: 从数据库读取");
         }else {
             queryFromServer(selectedProvince.getProvinceCode(),"city");
+            Log.d("TAG", "queryCities: 下载");
         }
 
     }
@@ -150,6 +158,7 @@ public class ChooseAreaActivity extends AppCompatActivity {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
         showProgressDialog();
+        Log.d("TAG", "queryFromServer: 对话框显示");
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
@@ -167,6 +176,7 @@ public class ChooseAreaActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             closedProgressDialog();
+                            Log.d("TAG", "run: 对话框关闭");
                             if ("province".equals(type)){
                                 queryProvinces();
                             }else if ("city".equals(type)){
@@ -186,6 +196,7 @@ public class ChooseAreaActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         closedProgressDialog();
+//                Looper.prepare();
                         Toast.makeText(ChooseAreaActivity.this,"加载失败",Toast.LENGTH_LONG).show();
                     }
                 });

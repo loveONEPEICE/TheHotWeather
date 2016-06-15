@@ -1,5 +1,7 @@
 package com.lhl.test.util;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,7 @@ public class HttpUtil {
                          * response.append(line);
                          * */
                         response.append(line);
+                        Log.d("TAG", "run: HttpUtil请求数据成功");
                     }
                     if (listener != null){
 //                        设置回调方法onFinish()
@@ -42,6 +45,7 @@ public class HttpUtil {
                          * listener.onFinish(response.toString());
                          * */
                         listener.onFinish(response.toString());
+
                     }
                 } catch (Exception e) {
 //                   设置回调方法onError()
