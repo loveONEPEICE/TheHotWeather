@@ -37,7 +37,6 @@ public class HttpUtil {
                          * response.append(line);
                          * */
                         response.append(line);
-                        Log.d("TAG", "run: HttpUtil请求数据成功");
                     }
                     if (listener != null){
 //                        设置回调方法onFinish()
