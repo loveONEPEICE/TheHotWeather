@@ -224,7 +224,6 @@ public class ChooseAreaActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
     if (currentLevel == LEVEL_COUNTY){
         queryCities();
     }else if (currentLevel ==LEVEL_CITY){

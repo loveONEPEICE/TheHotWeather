@@ -4,7 +4,8 @@ package="com.lhl.test.activities">
 <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
     android:supportsRtl="true" android:theme="@style/AppTheme">
 
-    <activity android:name=".ChooseAreaActivity">
+    <activity android:name=".ChooseAreaActivity"
+         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
