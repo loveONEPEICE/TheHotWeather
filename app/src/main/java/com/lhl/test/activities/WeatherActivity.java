@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lhl.test.service.AutoUpdateService;
 import com.lhl.test.util.HttpCallbackListener;
 import com.lhl.test.util.HttpUtil;
 import com.lhl.test.util.Utility;
@@ -97,6 +98,9 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         currentDateText.setText(prefs.getString("current_date", ""));
         weatherInforLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+//   显示天气界面时开启服务
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     //查询县级代号对应的天气代号
