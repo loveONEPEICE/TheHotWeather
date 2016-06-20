@@ -2,20 +2,27 @@ package com.lhl.test.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lhl.test.util.HttpCallbackListener;
 import com.lhl.test.util.HttpUtil;
 import com.lhl.test.util.Utility;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class WeatherActivity extends AppCompatActivity implements View.OnClickListener {
 //
@@ -71,12 +78,18 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    class MyHanlder extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    }
+
     //从SharedPreferences文件中读取存储的天气信息，并显示到界面上
     private void showWeather() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
 
         cityNameText.setText(prefs.getString("city_name", ""));
-        Log.d("weatherCode", "prefs.getString --->"+prefs.getString("city_name", ""));
         temp1Text.setText(prefs.getString("temp1", ""));
         temp1Text.setText(prefs.getString("temp1", ""));
         weatherDespText.setText(prefs.getString("weather_desp", ""));
@@ -96,35 +109,40 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
     private void queryFromSever(final String address, final String type) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
-            public void onFinish(String response) {
-                Log.d("TAG", "onFinish:response= "+response);
-                if ("countyCode".equals(type)) {
-                    if (!TextUtils.isEmpty(response)) {
-                        String[] array = response.split("\\|");
-                        Log.d("TAG", "array.length : "+array.length);
-                        if (array != null && array.length == 2) {
-                            String weatherCode = array[1];
-                            Log.d("TAG", "weatherCode: "+weatherCode);
-                            queryWeatherInfo(weatherCode);
+            public void onFinish(final String response) {
+                Log.d("TAG", "onFinish: ");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if ("countyCode".equals(type)) {
+                            if (!TextUtils.isEmpty(response)) {
+                                String[] array = response.split("\\|");
+                                if (array != null && array.length == 2) {
+                                    String weatherCode = array[1];
+                                    queryWeatherInfo(weatherCode);
+                                }
+                            }
+                        } else if ("weatherCode".equals(type)) {
+                            Utility.handleWeatherResponse(WeatherActivity.this, response);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showWeather();
+                                }
+                            });
                         }
                     }
-                } else if ("weatherCode".equals(type)) {
-                    Log.d("TAG", "类型为weatherCode ");
-                    Utility.handleWeatherResponse(WeatherActivity.this, response);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showWeather();
-                        }
-                    });
-                }
+                }).start();
+
             }
 
             @Override
             public void onError(Exception e) {
+                Log.d("TAG", "onError: ");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+//                        TODO 解决总是同步失败的BUG
                         publishText.setText("同步失败");
                     }
                 });
@@ -153,11 +171,37 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode = prefs.getString("weather_code","");
                 if (!TextUtils.isEmpty(weatherCode)){
-                    queryWeatherCode(weatherCode);
+                    queryWeatherInfo(weatherCode);
                 }
                 break;
             default:
                 break;
         }
+    }
+    private boolean isBack = false;
+
+    /**
+     * Take care of calling onBackPressed() for pre-Eclair platforms.
+     *
+     * @param keyCode
+     * @param event
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if (!isBack) {
+                Toast.makeText(this, "再次点击back键退出应用", Toast.LENGTH_LONG).show();
+                isBack = true;
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        isBack = false;
+                    }
+                },3000);
+            }else {
+                this.finish();
+            }
+        }
+        return isBack;
     }
 }

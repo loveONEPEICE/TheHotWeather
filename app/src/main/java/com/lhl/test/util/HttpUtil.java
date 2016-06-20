@@ -1,5 +1,7 @@
 package com.lhl.test.util;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,6 +22,7 @@ public class HttpUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d("TAG", "run: ");
                 HttpURLConnection connection = null;
                 try {
                     URL url = new URL(address);
@@ -48,6 +51,7 @@ public class HttpUtil {
                     }
                 } catch (Exception e) {
 //                   设置回调方法onError()
+                    Log.d("TAG", "run: "+e);
                     listener.onError(e);
                 }
                 finally {
